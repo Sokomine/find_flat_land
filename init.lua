@@ -1,8 +1,10 @@
 
 find_flat_land = {};
 
-dofile(minetest.get_modpath( minetest.get_current_modname() ).."/detect_flat_land.lua");
-dofile(minetest.get_modpath( minetest.get_current_modname() ).."/detect_local_extrema.lua");
+--dofile(minetest.get_modpath( minetest.get_current_modname() ).."/detect_flat_land.lua");
+--dofile(minetest.get_modpath( minetest.get_current_modname() ).."/detect_local_extrema.lua");
+
+dofile(minetest.get_modpath( minetest.get_current_modname() ).."/detect_flat_land_fast.lua");
 dofile(minetest.get_modpath( minetest.get_current_modname() ).."/build_simple_hut.lua");
 
 --- just a node that can be colored and thus visualize the created segments

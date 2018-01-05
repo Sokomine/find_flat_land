@@ -1,14 +1,14 @@
 
 -- locate a place for the "hut" and place it
-find_flat_land.simple_hut_find_place_and_build = function( heightmap, minp, maxp, same_height_count, sizex, sizez )
-	res = find_flat_land.search_for_flat_land( same_height_count, sizex, sizez, heightmap, minp, maxp );
+find_flat_land.simple_hut_find_place_and_build = function( heightmap, minp, maxp, sizex, sizez, minheight, maxheight )
 
-	print( "Places found of size "..tostring( sizex ).."x"..tostring(sizez)..": "..tostring( #res.places_x )..
-			       " and "..tostring( sizez ).."x"..tostring(sizex)..": "..tostring( #res.places_z )..
-		".");
+	local res = find_flat_land.find_flat_land_fast( heightmap, minp, maxp, sizex, sizez, minheight, maxheight );
+--	print( "Places found of size "..tostring( sizex ).."x"..tostring(sizez)..": "..tostring( #res.places_x )..
+--			       " and "..tostring( sizez ).."x"..tostring(sizex)..": "..tostring( #res.places_z )..
+--		".");
 
 	if( (#res.places_x + #res.places_z )< 1 ) then
-		print( "  Aborting. No place found.");
+--		print( "  Aborting. No place found.");
 		return false;
 	end
 
@@ -222,7 +222,6 @@ find_flat_land.simple_hut_place_hut = function( p, sizex, sizez, materials )
 end
 
 find_flat_land.simple_hut_generate = function( heightmap, minp, maxp)
-	local same_height_count = find_flat_land.do_same_height_count( heightmap, minp, maxp );
 	-- halfway reasonable house sizes
 	local maxsize = 14;
 	if( math.random(1,5)==1) then
@@ -231,7 +230,8 @@ find_flat_land.simple_hut_generate = function( heightmap, minp, maxp)
 	local sizex = math.random(7,maxsize);
 	local sizez = math.max( 7, math.min( maxsize, math.random( math.floor(sizex/4), sizex*2 )));
 	-- chooses random materials and a random place without destroying the landscape
-	find_flat_land.simple_hut_find_place_and_build( heightmap, minp, maxp, same_height_count, sizex, sizez );
+	-- minheight 2: one above water level; avoid below water level and places on ice
+	find_flat_land.simple_hut_find_place_and_build( heightmap, minp, maxp, sizex, sizez, 2, 1000 );
 end
 
 
