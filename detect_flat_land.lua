@@ -54,9 +54,13 @@ end
 -- works on the data gained by the function do_same_height_count(..)
 -- returns all places where a flat area with dimensions lookfor_x_dim and
 --    lookfor_z_dim exists
--- Note: If you want to search for i.e. places with 5x7 nodes, you ought to
---       look for lookfor_x_dim=5 and lookfor_z_dim=7 AND also do a second
---       call to this function to look for lookfor_x_dim=7 and lookfor_z_dim=5
+-- If you want to search for i.e. places with 5x7 nodes, you ought to
+-- look for lookfor_x_dim=5 and lookfor_z_dim=7.
+-- Returns: { places_x = array, places_z }
+--          with places_x: indices in heightmap where the previous
+--                         lookfor_x_dim x lookfor_z_dim nodes are flat
+--          and  places_z: indices in heightmap where the previous
+--                         lookfor_z_dim x lookfor_x_dim nodes are flat
 find_flat_land.search_for_flat_land = function( same_height_count,
 		lookfor_x_dim, lookfor_z_dim,
 		heightmap, minp, maxp )
@@ -70,7 +74,8 @@ find_flat_land.search_for_flat_land = function( same_height_count,
 	end
 	-- the return value; will contain the indices (of heightmap) where the
 	-- searched for flat space exists
-	local places = {};
+	local places_x = {};
+	local places_z = {};
 	-- identify and mark places that are flat areas of the required size
 	local i = 0;
 	local ax = 0;
@@ -96,10 +101,19 @@ find_flat_land.search_for_flat_land = function( same_height_count,
 		 and check_before >= lookfor_x_dim
 		 and height < maxp.y 
 		 and height > minp.y) then
-			table.insert( places, i );
+			table.insert( places_x, i );
+--			minetest.set_node( {x=ax, y=height, z=az}, {name="default:meselamp"});
+		-- the place might fit if the building is rotated by 90 degree
+		elseif(
+		     same_height_count.xrun[ i ]>= lookfor_z_dim
+	         and same_height_count.zrun[ i ]>= lookfor_x_dim
+		 and check_before >= lookfor_z_dim
+		 and height < maxp.y
+		 and height > minp.y) then
+			table.insert( places_z, i );
 --			minetest.set_node( {x=ax, y=height, z=az}, {name="default:mese"});
 		end
 	end
 	end
-	return places;
+	return {places_x=places_x, places_z=places_z};
 end
